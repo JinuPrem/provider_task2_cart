@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:provider_task2_cart/provider/provider_page.dart';
 import 'cart_datamodel.dart';
 import 'cart_page.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -11,15 +12,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List name = [
+    'Apple',
+    'Mango',
+    'Banana',
+    'Grapes',
+    'Watermelon',
+    'Kiwi',
+    'Orange',
+    'Peach'
+  ];
+  List unit = ['Kg', 'Doz', 'Doz', 'Kg', 'Kg', 'Pc', 'Doz', 'Ps'];
+  List price = ['\$20', '\$30', '\$10', '\$8', '\$25', '\$40', '\$15', '\$25'];
+  List image = [
+    'images/apple.jpeg',
+    'images/mango.jpeg',
+    'images/banana.jpeg',
+    'images/grapes.jpeg',
+    'images/watermelon.jpeg',
+    'images/kiwi.jpeg',
+    'images/orange.jpeg',
+    'images/peach.jpeg'
+  ];
 
-  List name=['Apple','Mango','Banana','Grapes','Watermelon','Kiwi','Orange','Peach'];
-  List unit=['Kg','Doz','Doz','Kg','Kg','Pc','Doz','Ps'];
-  List price=['\$20','\$30','\$10','\$8','\$25','\$40','\$15','\$25'];
-  List image=['images/apple.jpeg','images/mango.jpeg','images/banana.jpeg','images/grapes.jpeg','images/watermelon.jpeg','images/kiwi.jpeg','images/orange.jpeg','images/peach.jpeg'];
-
- List<CartDataModel> shopping= [];
+  List<CartDataModel> shopping = [];
   @override
-
   void initState() {
     super.initState();
     shopping = List.generate(name.length, (index) {
@@ -31,24 +48,46 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
+
+  @override
   Widget build(BuildContext context) {
     final object = Provider.of<Provider_class>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: Text('Product List')),
-        actions: [Padding(
-          padding: const EdgeInsets.only(right: 15.0),
-          child: IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>Cart()));
-              },
-              icon: Icon(Icons.shopping_cart),
+        title: const Text('Product List'),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Stack(alignment: Alignment.center, children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Cart()));
+                },
+                icon: const Icon(Icons.shopping_cart),
+              ),
+              if (object.favoriteItemCount > 0)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.red,
+                    radius: 10,
+                    child: Text(
+                      object.favoriteItemCount.toString(),
+                      style: const TextStyle(fontSize: 12, color: Colors.white),
+                    ),
+                  ),
+                )
+            ]),
           ),
-        )],
+
+        ],
       ),
       body: ListView.builder(
-        itemCount: shopping.length,
-          itemBuilder: (BuildContext context, int index){
+          itemCount: shopping.length,
+          itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
@@ -59,8 +98,8 @@ class _HomePageState extends State<HomePage> {
                         width: 70,
                         height: 70,
                         decoration: BoxDecoration(
-                          image: DecorationImage(image: AssetImage(shopping[index].image))
-                        ),
+                            image: DecorationImage(
+                                image: AssetImage(shopping[index].image))),
                       ),
                       title: Text('Name:${shopping[index].name}'),
                       subtitle: Column(
@@ -70,14 +109,17 @@ class _HomePageState extends State<HomePage> {
                           Text('Price:${shopping[index].price}'),
                         ],
                       ),
-trailing: ElevatedButton(onPressed: (){
-  object.favorites(shopping[index].name,shopping[index].unit,shopping[index].price,shopping[index].image);
-
-},
-    style: ElevatedButton.styleFrom(
-      primary: Colors.black54
-    ),
-    child: Text('Add to Cart')),
+                      trailing: ElevatedButton(
+                          onPressed: () {
+                            object.favorites(
+                                shopping[index].name,
+                                shopping[index].unit,
+                                shopping[index].price,
+                                shopping[index].image);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black54),
+                          child: const Text('Add to Cart')),
                     )
                   ],
                 ),

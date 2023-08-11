@@ -11,6 +11,10 @@ class Provider_class extends ChangeNotifier{
   List get favoritePrice=>_favPrice;
   List get favoriteImages=>_favImages;
 
+
+  int get favoriteItemCount => _favName.length;
+
+
   void favorites(String name,unit,price,image){
     final favNameList = _favName.contains(name);
     if(favNameList){
